@@ -1,0 +1,3 @@
+set arrayName(index) value
+
+Note that this is different than 'array set', which is used for setting a list of values.
