@@ -1,0 +1,5 @@
+puts [format "%-20s" "potatoes are sweet man"]
+puts [format "%20s"  "right on dude"]
+puts [format "%2.2f" 63.1]
+puts [format "%e" 4]
+puts [format "%c" 49]
