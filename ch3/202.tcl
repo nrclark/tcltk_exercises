@@ -1,18 +1,22 @@
 #!/usr/bin/env tclsh
 
-set Delimiter " "
+set Delimiter ","
 
 while {[set string [gets stdin]] != ""} {
-    lappend line_list $string
+    lappend lineList $string
 }
-
 # Calculates the total number of rows in the table
-set numRows [llength $line_list]
+set numRows [llength $lineList]
 
 # Calculates the total number of columns in the table
+# and splits up lines based on the input delimiter
+
 set numCols 0
-foreach line $line_list {
-    set length [llength [split $line $Delimiter]]
+for {set r 0} {$r < $numRows} {incr r} {
+    set line [lindex $lineList $r]
+    set newRow [split [lindex $lineList $r] $Delimiter]
+    lset lineList $r $newRow
+    set length [llength $newRow]
     if {$length > $numCols} {
         set numCols $length
     }
@@ -24,7 +28,7 @@ foreach line $line_list {
 for {set r 0} {$r < $numRows} {incr r} {
     set length_list ""
     for {set c 0} {$c < $numCols} {incr c} {
-        set element [lindex [lindex $line_list $r] $c]
+        set element [lindex [lindex $lineList $r] $c]
         set length [string length $element]
         lappend length_list $length
     }
@@ -56,7 +60,7 @@ for {set r 0} {$r < $numRows} {incr r} {
     puts -nonewline "|"
     for {set c 0} {$c < $numCols} {incr c} {
         set width [lindex $maxWidths $c]
-        puts -nonewline [format " %-${width}s |" [lindex [lindex $line_list $r] $c]]
+        puts -nonewline [format " %-${width}s |" [lindex [lindex $lineList $r] $c]]
     }
     puts ""
 }
