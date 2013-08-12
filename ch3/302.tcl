@@ -44,27 +44,52 @@ proc unchunkize {x} {
     return [join $x ""]
 }
 
+proc encode {} {
+    # Command routine that encodes data and
+    # displays it.
+    global argc argv
+    if {$argc > 1} {
+        set myString [join [lrange $argv 1 end]]
+    } else {
+        set myString [read stdin]
+    }
+
+    set chunks [chunkize $myString]
+
+    for {set k 0} {$k < [llength $chunks]} {incr k} {
+        binary scan [lindex $chunks $k] I x
+        puts $x
+    }
+}
+
+proc decode {} {
+    # Command routine that decodes data and displays
+    # it.
+    #
+    global argc argv
+    if {$argc > 1} {
+        set myChunks [lrange $argv 1 end]
+    } else {
+        set x [read stdin]
+        set myChunks [split $x]
+    }
+
+    for {set k 0} {$k < [llength $myChunks]} {incr k} {
+        set hexVal [join [lindex $myChunks $k]]
+        if {$hexVal != ""} {
+            puts -nonewline [binary format I $hexVal] 
+        }
+    }
+    puts ""
+}
 
 proc main {} {
     global argc argv
-    if {$argc > 0} {
-        set myString $argv
+    if {[lindex $argv 0] == "encode"} {
+        encode
     } else {
-        set myString [gets stdin]
+        decode
     }
-
-    puts $myString
-
-    set chunks [chunkize $myString]
-    puts $chunks
-
-    for {set k 0} {$k < [llength $chunks]} {incr k} {
-        puts [lindex $chunks $k]
-        puts [string length [lindex $chunks $k]]
-    }
-
-    puts [unchunkize [chunkize $myString]]
-exit 1
 }
 
 main
